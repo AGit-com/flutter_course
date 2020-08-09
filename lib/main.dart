@@ -112,19 +112,19 @@ class HomeScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: Hexcolor('#dfe1f5'),
                           borderRadius: BorderRadius.circular(40)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(Icons.search),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Search some more more more Subjects",
-                              style: TextStyle(
-                                  fontSize: 16, color: Color(0xFF61688B)),
-                            ),
-                          )
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: TextField(
+                          textAlignVertical: TextAlignVertical.center,
+                          showCursor: false,
+                          decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 5),
+                              hintText: "Search Subjects",
+                              suffixIcon: Icon(Icons.search),
+                              border: UnderlineInputBorder(
+                                  borderSide: BorderSide.none)),
+                        ),
                       ),
                     ),
                     Row(
