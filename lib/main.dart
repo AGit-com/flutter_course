@@ -119,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "Search some more Subjects",
+                              "Search some more more more Subjects",
                               style: TextStyle(
                                   fontSize: 16, color: Color(0xFF61688B)),
                             ),
