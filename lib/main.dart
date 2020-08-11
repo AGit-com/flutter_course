@@ -26,7 +26,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class Post {
+  String body;
+  String author;
+  int likes = 0;
+  bool userLiked = false;
+
+  Post(this.body, this.author);
+
+  void likePost() {
+    this.userLiked = !this.userLiked;
+    if (userLiked) {
+      this.likes += 1;
+    } else {
+      this.likes -= 1;
+    }
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String text = "asdfasdf0";
+  List<Post> posts = [];
+
+  void newPost(String text) {
+    this.setState(() {
+      posts.add(new Post(text, "Ayaan"));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,22 +79,24 @@ class HomeScreen extends StatelessWidget {
             ),
             ListTile(
               title: Text(
-                "Maths",
+                "Computer Organisation",
               ),
-              leading: Icon(Icons.assessment),
+              leading: Icon(Icons.computer),
             ),
             ListTile(
-              title: Text("Physics"),
-              leading: Icon(Icons.lightbulb_outline),
-            )
+              title: Text("SQL"),
+              leading: Icon(Icons.data_usage),
+            ),
+            ListTile(title: Text("Python"), leading: Icon(Icons.add))
           ],
         )),
         appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.black),
+          title: Text("Placement Wale"),
+          titleSpacing: NavigationToolbar.kMiddleSpacing,
           leading: null,
           automaticallyImplyLeading: true,
-
-          actions: [Image.asset("assets/images/user.png")],
+          actions: [Image.asset("assets/images/finalusericon.png")],
           elevation: 10,
           backgroundColor: Hexcolor('#95a0fc'),
           centerTitle: false,
@@ -113,19 +147,11 @@ class HomeScreen extends StatelessWidget {
                           color: Hexcolor('#dfe1f5'),
                           borderRadius: BorderRadius.circular(40)),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: TextField(
-                          textAlignVertical: TextAlignVertical.center,
-                          showCursor: false,
-                          decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 5),
-                              hintText: "Search Subjects",
-                              suffixIcon: Icon(Icons.search),
-                              border: UnderlineInputBorder(
-                                  borderSide: BorderSide.none)),
-                        ),
-                      ),
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: TextInputWidget(this.newPost)),
+                    ),
+                    Expanded(
+                      child: PostList(posts),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,12 +177,13 @@ class HomeScreen extends StatelessWidget {
                             crossAxisCount: 2,
                             itemBuilder: (context, index) {
                               return Container(
+                                  margin: EdgeInsets.all(8),
                                   height: 200,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: kBlueColor,
+                                    color: Hexcolor("#fffff"),
                                     image: DecorationImage(
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.fitHeight,
                                         image: AssetImage(
                                             categories[index].image)),
                                   ));
@@ -167,5 +194,90 @@ class HomeScreen extends StatelessWidget {
             )
           ],
         ));
+  }
+}
+
+class TextInputWidget extends StatefulWidget {
+  final Function(String) callback;
+
+  TextInputWidget(this.callback);
+
+  @override
+  _TextInputWidgetState createState() => _TextInputWidgetState();
+}
+
+class _TextInputWidgetState extends State<TextInputWidget> {
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  void click() {
+    widget.callback(controller.text);
+    controller.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: <Widget>[
+      TextField(
+        textAlignVertical: TextAlignVertical.center,
+        showCursor: false,
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 5),
+            hintText: "Search Subjects",
+            suffixIcon: IconButton(
+              icon: Icon(Icons.search),
+              tooltip: "Search",
+              splashColor: kBlueColor,
+              splashRadius: 30,
+              onPressed: this.click,
+            ),
+            border: UnderlineInputBorder(borderSide: BorderSide.none)),
+        controller: this.controller,
+      ),
+    ]);
+  }
+}
+
+class PostList extends StatefulWidget {
+  final List<Post> listItems;
+
+  PostList(this.listItems);
+
+  @override
+  _PostListState createState() => _PostListState();
+}
+
+class _PostListState extends State<PostList> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: this.widget.listItems.length,
+      itemBuilder: (context, index) {
+        var post = this.widget.listItems[index];
+        return Card(
+          child: Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: Text(post.body),
+                  subtitle: Text(post.author),
+                ),
+              ),
+              Row(children: [
+                IconButton(
+                  icon: Icon(Icons.thumb_up),
+                  onPressed: post.likePost,
+                )
+              ])
+            ],
+          ),
+        );
+      },
+    );
   }
 }
